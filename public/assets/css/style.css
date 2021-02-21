@@ -6,6 +6,8 @@ padding: 0;
 
 .save-note {
 display: none;
+width: 20px;
+height: 20px;
 }
 
 .icons i {
