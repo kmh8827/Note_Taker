@@ -3,6 +3,8 @@ let noteText;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
+let noteItems;
+let noteID;
 
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
@@ -65,9 +67,16 @@ const renderActiveNote = () => {
 };
 
 const handleNoteSave = () => {
+  noteItems = document.querySelectorAll('.list-group-item');
+  if (noteItems[0].innerText === "") noteId=1; 
+  else {
+    const dataNote = JSON.parse(noteItems[noteItems.length - 1].getAttribute('data-note')).id
+    noteId = dataNote + 1;
+  }
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
+    id: noteId
   };
   saveNote(newNote).then(() => {
     getAndRenderNotes();
@@ -178,7 +187,3 @@ if (window.location.pathname === '/notes') {
 }
 
 getAndRenderNotes();
-
-const pullup = document.getElementsByClassName('list-group')
-
-pullup.addEventListener('click', pullUpInfo());
