@@ -178,3 +178,7 @@ if (window.location.pathname === '/notes') {
 }
 
 getAndRenderNotes();
+
+const pullup = document.getElementsByClassName('list-group')
+
+pullup.addEventListener('click', pullUpInfo());

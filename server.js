@@ -11,7 +11,7 @@ app.use(express.static('public'));
 
 fs.readFile('db/db.json',"utf8", (err, data) => {
     if (err) throw err;
-    const notes = JSON.parse(data);
+    let notes = JSON.parse(data);
     console.log(notes);
  
     app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
@@ -22,12 +22,23 @@ fs.readFile('db/db.json',"utf8", (err, data) => {
 
     app.post('/api/notes', (req, res) => {
         const newNote = req.body;
+
         console.log(newNote);
     
-        notes = notes + newNote;
-    
-        res.json(newNote);
+        notes.push(newNote);
+        writeNotes();
+        return res.json(newNote);
     });
+
+    writeNotes = () => {
+        fs.writeFile("db/db.json",JSON.stringify(notes,'\t'),err => {
+            if (err) throw err;
+            return true;
+        });
+
+        return console.log('Note Written');
+    };
+
 });
 
 
