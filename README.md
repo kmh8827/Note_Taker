@@ -1,3 +1,4 @@
+![Picture1](https://user-images.githubusercontent.com/73497003/108905610-eaaf7b80-75ed-11eb-9215-5c761877f0dc.png)
 # Note Taker <img align="right" src=" ">
 &nbsp;  
 &nbsp;  
