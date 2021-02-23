@@ -3,16 +3,17 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
+// Creates server at port 3000
 const PORT = 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
+// Getting the JSON file
 fs.readFile('db/db.json',"utf8", (err, data) => {
     if (err) throw err;
     let notes = JSON.parse(data);
-    console.log(notes);
  
     app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
 
@@ -20,10 +21,9 @@ fs.readFile('db/db.json',"utf8", (err, data) => {
 
     app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
+    // Adding to the JSON File
     app.post('/api/notes', (req, res) => {
         const newNote = req.body;
-
-        console.log(newNote);
     
         notes.push(newNote);
         writeNotes();
@@ -33,14 +33,9 @@ fs.readFile('db/db.json',"utf8", (err, data) => {
     writeNotes = () => {
         fs.writeFile("db/db.json",JSON.stringify(notes),err => {
             if (err) throw err;
-            return true;
         });
-
-        return console.log('Note Written');
     };
 
 });
-
-
 
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
