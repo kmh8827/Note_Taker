@@ -24,7 +24,7 @@ Simply download the program
 &nbsp;  
 ### Usage  
 &nbsp;  
-Make sure you have the required dependencies and run the program's index file  
+Make sure you have the required dependencies and run the program's server file  
 &nbsp;  
 ### Contributing  
 &nbsp;  
