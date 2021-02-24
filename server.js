@@ -13,11 +13,14 @@ app.use(express.static('public'));
 
 let notes = [];
 
-// Getting the JSON file
-fs.readFile('db/db.json',"utf8", (err, data) => {
-    if (err) throw err;
-    notes = data ? JSON.parse(data) : [];
-});
+const readNotes = (cb) => {
+    // Getting the JSON file
+    fs.readFile('db/db.json',"utf8", (err, data) => {
+        if (err) throw err;
+        notes = data ? JSON.parse(data) : [];
+        cb(notes);
+    });
+};
 
 const writeNotes = () => {
     fs.writeFile("db/db.json",JSON.stringify(notes),err => {
@@ -26,7 +29,10 @@ const writeNotes = () => {
 };
 
 app.get('/api/notes', (req, res) => {
-    res.json(notes);
+    readNotes((data) => {
+        console.log(data);
+        res.json(data);
+    });
 });
 
 // Adding to the JSON File
@@ -34,9 +40,9 @@ app.post('/api/notes', (req, res) => {
     const newNote = req.body;
     newNote.id = uuidv4();
 
-    notes.push([...notes, newNote]);
+    notes = [...notes, newNote];
     writeNotes();
-    return res.json(newNote);
+    return res.json(notes);
 });
 
 // Adding to the JSON File
@@ -44,8 +50,12 @@ app.delete('/api/notes/:id', (req, res) => {
     const id = req.params.id;
 
     notes = notes.filter(note => note.id !== id);
+
     writeNotes();
-    return res.json(notes);
+
+    readNotes((data) => {
+        res.json(data);
+    });
 });
 
 app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
