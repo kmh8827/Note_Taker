@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 // Creates server at port 3000
@@ -15,7 +16,7 @@ let notes = [];
 // Getting the JSON file
 fs.readFile('db/db.json',"utf8", (err, data) => {
     if (err) throw err;
-    notes = JSON.parse(data);
+    notes = data ? JSON.parse(data) : [];
 });
 
 const writeNotes = () => {
@@ -31,10 +32,20 @@ app.get('/api/notes', (req, res) => {
 // Adding to the JSON File
 app.post('/api/notes', (req, res) => {
     const newNote = req.body;
+    newNote.id = uuidv4();
 
-    notes.push(newNote);
+    notes.push([...notes, newNote]);
     writeNotes();
     return res.json(newNote);
+});
+
+// Adding to the JSON File
+app.delete('/api/notes/:id', (req, res) => {
+    const id = req.params.id;
+
+    notes = notes.filter(note => note.id !== id);
+    writeNotes();
+    return res.json(notes);
 });
 
 app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
