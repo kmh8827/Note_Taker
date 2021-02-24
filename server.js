@@ -10,32 +10,34 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
+let notes = [];
+
 // Getting the JSON file
 fs.readFile('db/db.json',"utf8", (err, data) => {
     if (err) throw err;
-    let notes = JSON.parse(data);
- 
-    app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
-
-    app.get('/api/notes', (req, res) => res.sendFile(path.join(__dirname, '/db/db.json')));
-
-    app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
-
-    // Adding to the JSON File
-    app.post('/api/notes', (req, res) => {
-        const newNote = req.body;
-    
-        notes.push(newNote);
-        writeNotes();
-        return res.json(newNote);
-    });
-
-    writeNotes = () => {
-        fs.writeFile("db/db.json",JSON.stringify(notes),err => {
-            if (err) throw err;
-        });
-    };
-
+    notes = JSON.parse(data);
 });
+
+const writeNotes = () => {
+    fs.writeFile("db/db.json",JSON.stringify(notes),err => {
+        if (err) throw err;
+    });
+};
+
+app.get('/api/notes', (req, res) => {
+    res.json(notes);
+});
+
+// Adding to the JSON File
+app.post('/api/notes', (req, res) => {
+    const newNote = req.body;
+
+    notes.push(newNote);
+    writeNotes();
+    return res.json(newNote);
+});
+
+app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
