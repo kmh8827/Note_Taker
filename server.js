@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const app = express();
 // Creates server at port 3000
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
